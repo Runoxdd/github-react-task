@@ -34,7 +34,7 @@ const RepoList = ({ repos, mostStarred, page, totalPages, setPage }) => {
           onClick={() => setPage(page - 1)}
           disabled={page === 1}
         >
-          <FiArrowLeft /> Prev
+          <FiArrowLeft /> Previous
         </button>
         <span>
           Page {page} of {totalPages}

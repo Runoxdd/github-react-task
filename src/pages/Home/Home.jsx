@@ -231,7 +231,7 @@ const Home = () => {
               <h5>
                 {repo.name}{' '}
                 {repo.id === mostStarredRepo.id && (
-                  <span className="badge bg-warning">⭐ Most Popular</span>
+                  <span className="badge bg-warning">⭐ Most Starred</span>
                 )}
               </h5>
               <p>{repo.description}</p>

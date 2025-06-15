@@ -16,11 +16,11 @@ const RepoList = ({ repos, mostStarred, page, totalPages, setPage }) => {
           <h5>
             {repo.name}
             {repo.id === mostStarred.id && (
-              <span className="badge bg-warning ms-2"> Most Popular ⭐</span>
+              <span className="badge bg-warning ms-2"> Most Starred ⭐</span>
             )}
           </h5>
           <p>{repo.description}</p>
-          <span className="badge bg-secondary me-2">
+          <span className="badge bg-secondary me-4 ">
             {repo.language || 'N/A'}
           </span>
           <a href={repo.html_url} target="_blank" rel="noreferrer">

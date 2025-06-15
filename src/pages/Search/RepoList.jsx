@@ -16,7 +16,7 @@ const RepoList = ({ repos, mostStarred, page, totalPages, setPage }) => {
           <h5>
             {repo.name}
             {repo.id === mostStarred.id && (
-              <span className="badge bg-warning ms-2"> Most Popular ⭐</span>
+              <span className="badge bg-warning ms-2"> Most Starred ⭐</span>
             )}
           </h5>
           <p>{repo.description}</p>

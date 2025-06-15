@@ -1,6 +1,6 @@
 import React from 'react';
 
-const User = ({ user }) => {
+const UserDetails = ({ user }) => {
   return (
     <div className="card p-3 mb text-center">
       <img
@@ -18,4 +18,4 @@ const User = ({ user }) => {
   );
 };
 
-export default User;
+export default UserDetails;

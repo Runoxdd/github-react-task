@@ -28,7 +28,7 @@ const SearchBar = ({
       />
       {suggestions.length > 0 && (
         <ul
-          className="list-group positio-absolute w-100 shadow"
+          className="list-group position-absolute w-100 shadow"
           style={{ zIndex: 1 }}
         >
           {suggestions.map((suggestion) => (

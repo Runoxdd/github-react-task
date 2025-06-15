@@ -5,11 +5,11 @@ import Home from '../src/pages/Home/Home';
 export const routes = [
   {
     path: '/',
-    element: <MainLayout />,
+    element: <MainLayout/>,
     children: [
       {
         index: true,
-        element: <Home />,
+        element: <Home/>,
       },
     ],
   },

@@ -1,70 +1,52 @@
-<<<<<<< HEAD
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React, { useEffect, useState } from 'react'
+import axios  from 'axios';
 
-const Home = () => {
-  const [input, setInput] = useState('');
+
+const FindUsers = () => {
+  
+  const [searchInput, setSearchInput] = useState('');
   const [suggestions, setSuggestions] = useState([]);
-
-  const [globalInput, setGlobalInput] = useState('');
-  const [globalResults, setGlobalResults] = useState([]);
-
   const [userData, setUserData] = useState(null);
   const [repos, setRepos] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const perPage = 10;
+  const perPage = 6;
 
-  // Fetch suggestions
+  // 🔍 Global user search as you type
   useEffect(() => {
     const fetchSuggestions = async () => {
-      if (input.length < 2) {
+      if (searchInput.length < 2) {
         setSuggestions([]);
         return;
       }
       try {
-        const response = await axios.get(
-          `https://api.github.com/search/users?q=${input}`
+        const res = await axios.get(
+          `https://api.github.com/search/users?q=${searchInput}`
         );
-        setSuggestions(response.data.items.slice(0, 20));
-      } catch {
+        setSuggestions(res.data.items.slice(0, 15));
+      } catch (err) {
         setSuggestions([]);
       }
     };
-    fetchSuggestions();
-  }, [input]);
 
-  // Global search
-  const handleGlobalSearch = async () => {
-    if (globalInput.length < 2) return;
-    try {
-      const response = await axios.get(
-        `https://api.github.com/search/users?q=${globalInput}`
-      );
-      setGlobalResults(response.data.items.slice(0, 20));
-    } catch (err) {
-      console.error(err);
-      setGlobalResults([]);
-    }
-  };
+    const debounce = setTimeout(fetchSuggestions, 300); // ⏳ optional debounce
 
-  // Fetch user data and repos with language
+    return () => clearTimeout(debounce);
+  }, [searchInput]);
+
+  // 👤 Fetch user profile + repos
   const fetchUserData = async (username) => {
     setLoading(true);
     setError('');
     setUserData(null);
     setRepos([]);
     setSuggestions([]);
-    setGlobalResults([]);
+    setSearchInput('');
 
     try {
-      const userRes = await axios.get(
-        `https://api.github.com/users/${username}`
-      );
-      const repoRes = await axios.get(
-        `https://api.github.com/users/${username}/repos`
-      );
+      const userRes = await axios.get(`https://api.github.com/users/${username}`);
+      const repoRes = await axios.get(`https://api.github.com/users/${username}/repos`);
 
       const reposWithLang = await Promise.all(
         repoRes.data.map(async (repo) => {
@@ -73,9 +55,7 @@ const Home = () => {
               `https://api.github.com/repos/${username}/${repo.name}/languages`
             );
             const languages = langRes.data;
-            const topLang = Object.entries(languages).sort(
-              (a, b) => b[1] - a[1]
-            )[0]?.[0];
+            const topLang = Object.entries(languages).sort((a, b) => b[1] - a[1])[0]?.[0];
             return { ...repo, topLanguage: topLang || 'N/A' };
           } catch {
             return { ...repo, topLanguage: 'N/A' };
@@ -85,29 +65,18 @@ const Home = () => {
 
       setUserData(userRes.data);
       setRepos(reposWithLang);
-
       setCurrentPage(1);
+    } catch {
+      setError('User not found or something went wrong.');
+    } finally {
       setLoading(false);
-      setInput('');
-    } catch (err) {
-      setError('User not found or something went wrong.', err);
-      setLoading(false);
-      setInput('');
     }
   };
 
   const handleKeyDown = (e) => {
-    if (e.key === 'Enter') {
-      if (suggestions.length > 0) {
-        fetchUserData(suggestions[0].login);
-      } else {
-        fetchUserData(input);
-      }
+    if (e.key === 'Enter' && suggestions.length === 1) {
+      fetchUserData(suggestions[0].login);
     }
-  };
-
-  const handleSuggestionClick = (username) => {
-    fetchUserData(username);
   };
 
   const mostStarredRepo = repos.reduce(
@@ -121,81 +90,40 @@ const Home = () => {
     currentPage * perPage
   );
   const totalPages = Math.ceil(repos.length / perPage);
-=======
-import React from 'react'
->>>>>>> cce20b918991af17cce69e0be3f25381717edb6d
 
-export const Home = () => {
   return (
-<<<<<<< HEAD
     <div className="container mt-4">
       <h2>GitHub User Search</h2>
 
-      {/* Input 1: Suggestion + profile */}
-      <div className="input-group mb-3">
+      {/* 🔎 Universal Search Bar */}
+      <div className="input-group mb-3 position-relative">
         <input
           type="text"
           className="form-control"
           placeholder="Search GitHub users"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
+          value={searchInput}
+          onChange={(e) => setSearchInput(e.target.value)}
           onKeyDown={handleKeyDown}
         />
         <button
           className="btn btn-primary"
-          onClick={() => fetchUserData(input)}
+          onClick={() => suggestions.length > 0 && fetchUserData(suggestions[0].login)}
         >
-          Enter
-        </button>
-      </div>
-
-      {suggestions.length > 0 && (
-        <ul className="list-group mb-3">
-          {suggestions.map((user) => (
-            <li
-              key={user.id}
-              className="list-group-item d-flex align-items-center"
-              style={{ cursor: 'pointer' }}
-              onClick={() => handleSuggestionClick(user.login)}
-            >
-              <img
-                src={user.avatar_url}
-                alt="avatar"
-                className="rounded-circle me-2"
-                width={30}
-                height={30}
-              />
-              {user.login}
-            </li>
-          ))}
-        </ul>
-      )}
-
-      {/* Input 2: Global search */}
-      <div className="input-group mb-3">
-        <input
-          type="text"
-          className="form-control"
-          placeholder="Global Search GitHub users"
-          value={globalInput}
-          onChange={(e) => setGlobalInput(e.target.value)}
-          onKeyDown={(e) => e.key === 'Enter' && handleGlobalSearch()}
-        />
-        <button className="btn btn-secondary" onClick={handleGlobalSearch}>
           Search
         </button>
-      </div>
 
-      {globalResults.length > 0 && (
-        <div className="mb-4">
-          <h5>Global Search Results</h5>
-          <ul className="list-group">
-            {globalResults.map((user) => (
+        {/* 💡 Suggestions from global search */}
+        {suggestions.length > 0 && (
+          <ul
+            className="list-group position-absolute w-100 shadow"
+            style={{ zIndex: 2, top: '100%' }}
+          >
+            {suggestions.map((user) => (
               <li
                 key={user.id}
                 className="list-group-item d-flex align-items-center"
                 style={{ cursor: 'pointer' }}
-                onClick={() => handleSuggestionClick(user.login)}
+                onClick={() => fetchUserData(user.login)}
               >
                 <img
                   src={user.avatar_url}
@@ -208,8 +136,8 @@ export const Home = () => {
               </li>
             ))}
           </ul>
-        </div>
-      )}
+        )}
+      </div>
 
       {loading && <div className="alert alert-info">Loading...</div>}
       {error && <div className="alert alert-danger">{error}</div>}
@@ -247,9 +175,15 @@ export const Home = () => {
                 )}
               </h5>
               <p>{repo.description}</p>
-              <span className="badge bg-secondary">{repo.topLanguage}</span>
+              <span className="badge bg-secondary">
+                {repo.topLanguage}
+              </span>
               <br />
-              <a href={repo.html_url} target="_blank" rel="noopener noreferrer">
+              <a
+                href={repo.html_url}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 View on GitHub
               </a>
             </div>
@@ -278,11 +212,6 @@ export const Home = () => {
       )}
     </div>
   );
-};
-
-export default Home;
-=======
-    <div>Home</div>
-  )
 }
->>>>>>> cce20b918991af17cce69e0be3f25381717edb6d
+
+export default FindUsers

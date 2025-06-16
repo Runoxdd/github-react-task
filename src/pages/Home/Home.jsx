@@ -84,6 +84,7 @@ const Home = () => {
 
       setUserData(userRes.data);
       setRepos(reposWithLang);
+
       setCurrentPage(1);
       setLoading(false);
       setInput('');
@@ -240,9 +241,7 @@ const Home = () => {
                 )}
               </h5>
               <p>{repo.description}</p>
-              <span className="badge bg-secondary w-25">
-                {repo.topLanguage}
-              </span>
+              <span className="badge bg-secondary">{repo.topLanguage}</span>
               <br />
               <a href={repo.html_url} target="_blank" rel="noopener noreferrer">
                 View on GitHub

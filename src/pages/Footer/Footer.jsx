@@ -16,7 +16,9 @@ const Footer = () => {
         padding: '10px',
       }}
     >
-      <p>&copy;2025</p>
+      <p>
+        &copy; <span>2025</span>
+      </p>
       <p>Group Task</p>
     </div>
   );

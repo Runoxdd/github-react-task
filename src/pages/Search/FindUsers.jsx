@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from 'react'
-import axios  from 'axios';
-
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { Link, useNavigate } from 'react-router-dom';
 
 const FindUsers = () => {
-  
   const [searchInput, setSearchInput] = useState('');
   const [suggestions, setSuggestions] = useState([]);
   const [userData, setUserData] = useState(null);
@@ -13,11 +12,13 @@ const FindUsers = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const perPage = 6;
 
+  const navigate = useNavigate();
   // 🔍 Global user search as you type
   useEffect(() => {
     const fetchSuggestions = async () => {
       if (searchInput.length < 2) {
         setSuggestions([]);
+
         return;
       }
       try {
@@ -25,12 +26,12 @@ const FindUsers = () => {
           `https://api.github.com/search/users?q=${searchInput}`
         );
         setSuggestions(res.data.items.slice(0, 15));
-      } catch (err) {
+      } catch {
         setSuggestions([]);
       }
     };
 
-    const debounce = setTimeout(fetchSuggestions, 300); // ⏳ optional debounce
+    const debounce = setTimeout(fetchSuggestions, 300); //  optional debounce
 
     return () => clearTimeout(debounce);
   }, [searchInput]);
@@ -45,8 +46,12 @@ const FindUsers = () => {
     setSearchInput('');
 
     try {
-      const userRes = await axios.get(`https://api.github.com/users/${username}`);
-      const repoRes = await axios.get(`https://api.github.com/users/${username}/repos`);
+      const userRes = await axios.get(
+        `https://api.github.com/users/${username}`
+      );
+      const repoRes = await axios.get(
+        `https://api.github.com/users/${username}/repos`
+      );
 
       const reposWithLang = await Promise.all(
         repoRes.data.map(async (repo) => {
@@ -55,7 +60,9 @@ const FindUsers = () => {
               `https://api.github.com/repos/${username}/${repo.name}/languages`
             );
             const languages = langRes.data;
-            const topLang = Object.entries(languages).sort((a, b) => b[1] - a[1])[0]?.[0];
+            const topLang = Object.entries(languages).sort(
+              (a, b) => b[1] - a[1]
+            )[0]?.[0];
             return { ...repo, topLanguage: topLang || 'N/A' };
           } catch {
             return { ...repo, topLanguage: 'N/A' };
@@ -71,6 +78,10 @@ const FindUsers = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleUserClick = (username) => {
+    navigate(`/profile/${username}`);
   };
 
   const handleKeyDown = (e) => {
@@ -93,24 +104,26 @@ const FindUsers = () => {
 
   return (
     <div className="container mt-4">
-      <h2>GitHub User Search</h2>
-
-      {/* 🔎 Universal Search Bar */}
+      {/* Universal Search Bar */}
       <div className="input-group mb-3 position-relative">
         <input
           type="text"
           className="form-control"
-          placeholder="Search GitHub users"
+          placeholder="Search users"
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
           onKeyDown={handleKeyDown}
         />
-        <button
-          className="btn btn-primary"
-          onClick={() => suggestions.length > 0 && fetchUserData(suggestions[0].login)}
-        >
-          Search
-        </button>
+        <Link to={`/profile/${suggestions[0]?.login}`}>
+          <button
+            className="btn btn-primary"
+            onClick={() =>
+              suggestions.length > 0 && fetchUserData(suggestions[0].login)
+            }
+          >
+            Search
+          </button>
+        </Link>
 
         {/* 💡 Suggestions from global search */}
         {suggestions.length > 0 && (
@@ -123,7 +136,7 @@ const FindUsers = () => {
                 key={user.id}
                 className="list-group-item d-flex align-items-center"
                 style={{ cursor: 'pointer' }}
-                onClick={() => fetchUserData(user.login)}
+                onClick={() => handleUserClick(user.login)}
               >
                 <img
                   src={user.avatar_url}
@@ -175,15 +188,9 @@ const FindUsers = () => {
                 )}
               </h5>
               <p>{repo.description}</p>
-              <span className="badge bg-secondary">
-                {repo.topLanguage}
-              </span>
+              <span className="badge bg-secondary">{repo.topLanguage}</span>
               <br />
-              <a
-                href={repo.html_url}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
+              <a href={repo.html_url} target="_blank" rel="noopener noreferrer">
                 View on GitHub
               </a>
             </div>
@@ -212,6 +219,6 @@ const FindUsers = () => {
       )}
     </div>
   );
-}
+};
 
-export default FindUsers
+export default FindUsers;

@@ -4,27 +4,32 @@ import Home from '../src/pages/Home/Home';
 import User from '../src/pages/User';
 import Footer from '../src/pages/Footer/Footer';
 import About from '../src/components/About';
+import Profile from '../src/pages/Profile/Profile';
 
 export const routes = [
   {
     path: '/',
-    element: <MainLayout/>,
+    element: <MainLayout />,
     children: [
       {
         index: true,
-        element: <Home/>,
+        element: <Home />,
       },
       {
-        path:'/user',
-        element: <User/>,
+        path: '/user',
+        element: <User />,
       },
       {
-        path:'/about',
-        element: <About/>,
+        path: 'profile/:username',
+        element: <Profile />,
       },
       {
-        path:'/footer',
-        element: <Footer/>,
+        path: '/about',
+        element: <About />,
+      },
+      {
+        path: '/footer',
+        element: <Footer />,
       },
     ],
   },

@@ -6,11 +6,10 @@ import Footer from '../pages/Footer/Footer';
 const MainLayout = () => {
   return (
     <div>
-      <Navbar/>
+      <Navbar />
       <Outlet />
 
-      <Footer/>
-      
+      <Footer />
     </div>
   );
 };

@@ -1,5 +1,6 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
+import FindUsers from './Search/FindUsers';
 
 function User() {
   const [users, setUsers] = useState([]);
@@ -30,9 +31,10 @@ function User() {
 
   return (
     <div style={{ padding: '1rem' }}>
+      <FindUsers />
       <h2>GitHub Users</h2>
       <table
-        border="1"
+        border="5"
         cellPadding="10"
         style={{ width: '100%', textAlign: 'left' }}
       >

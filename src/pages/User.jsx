@@ -9,6 +9,13 @@ const headers = {
   Accept: 'application/vnd.github+json',
 };
 
+const token = import.meta.env.VITE_GITHUB_TOKEN;
+
+const headers = {
+  Authorization: `Bearer ${token}`,
+  Accept: 'application/vnd.github+json',
+};
+
 function User() {
   const [users, setUsers] = useState([]);
 

@@ -1,6 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
+const token = import.meta.env.VITE_GITHUB_TOKEN;
+
+
+const headers ={
+  Authorization: `Bearer ${token}`,
+  Accept: 'application/vnd.github+json',
+}
+
 
 const token = import.meta.env.VITE_GITHUB_TOKEN;
 
@@ -41,8 +49,12 @@ const FindUsers = () => {
       }
       try {
         const res = await axios.get(
+<<<<<<< HEAD
           `https://api.github.com/search/users?q=${searchInput}`,
           { headers }
+=======
+          `https://api.github.com/search/users?q=${searchInput}`,{headers}
+>>>>>>> 12136838d69bc89796f8dd542b9ea5d78e2e02d0
         );
         setSuggestions(res.data.items.slice(0, 15));
       } catch {
@@ -66,20 +78,31 @@ const FindUsers = () => {
 
     try {
       const userRes = await axios.get(
+<<<<<<< HEAD
         `https://api.github.com/users/${username}`,
         { headers }
       );
       const repoRes = await axios.get(
         `https://api.github.com/users/${username}/repos`,
         { headers }
+=======
+        `https://api.github.com/users/${username}`,{headers}
+      );
+      const repoRes = await axios.get(
+        `https://api.github.com/users/${username}/repos`,{headers}
+>>>>>>> 12136838d69bc89796f8dd542b9ea5d78e2e02d0
       );
 
       const reposWithLang = await Promise.all(
         repoRes.data.map(async (repo) => {
           try {
             const langRes = await axios.get(
+<<<<<<< HEAD
               `https://api.github.com/repos/${username}/${repo.name}/languages`,
               { headers }
+=======
+              `https://api.github.com/repos/${username}/${repo.name}/languages`,{headers}
+>>>>>>> 12136838d69bc89796f8dd542b9ea5d78e2e02d0
             );
             const languages = langRes.data;
             const topLang = Object.entries(languages).sort(
@@ -163,7 +186,7 @@ const FindUsers = () => {
         />
         <Link to={`/profile/${suggestions[0]?.login}`}>
           <button
-            className="btn btn-primary"
+            className="btn btn-primary custom-purple-btn-override"
             onClick={() =>
               suggestions.length > 0 && fetchUserData(suggestions[0].login)
             }

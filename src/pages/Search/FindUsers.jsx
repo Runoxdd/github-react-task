@@ -2,6 +2,13 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 
+const token = import.meta.env.VITE_GITHUB_TOKEN;
+
+const headers = {
+  Authorization: `Bearer ${token}`,
+  Accept: 'application/vnd.github+json',
+};
+
 const FindUsers = () => {
   const [searchInput, setSearchInput] = useState('');
   const [suggestions, setSuggestions] = useState([]);
@@ -10,9 +17,20 @@ const FindUsers = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+  const [recentSearches, setRecentSearches] = useState([]);
   const perPage = 6;
 
   const navigate = useNavigate();
+
+  //store recent searches
+  useEffect(() => {
+    const stored = localStorage.getItem('recentSearches');
+
+    if (stored) {
+      setRecentSearches(JSON.parse(stored));
+    }
+  }, [recentSearches]);
+
   // 🔍 Global user search as you type
   useEffect(() => {
     const fetchSuggestions = async () => {
@@ -23,7 +41,8 @@ const FindUsers = () => {
       }
       try {
         const res = await axios.get(
-          `https://api.github.com/search/users?q=${searchInput}`
+          `https://api.github.com/search/users?q=${searchInput}`,
+          { headers }
         );
         setSuggestions(res.data.items.slice(0, 15));
       } catch {
@@ -47,17 +66,20 @@ const FindUsers = () => {
 
     try {
       const userRes = await axios.get(
-        `https://api.github.com/users/${username}`
+        `https://api.github.com/users/${username}`,
+        { headers }
       );
       const repoRes = await axios.get(
-        `https://api.github.com/users/${username}/repos`
+        `https://api.github.com/users/${username}/repos`,
+        { headers }
       );
 
       const reposWithLang = await Promise.all(
         repoRes.data.map(async (repo) => {
           try {
             const langRes = await axios.get(
-              `https://api.github.com/repos/${username}/${repo.name}/languages`
+              `https://api.github.com/repos/${username}/${repo.name}/languages`,
+              { headers }
             );
             const languages = langRes.data;
             const topLang = Object.entries(languages).sort(
@@ -73,6 +95,13 @@ const FindUsers = () => {
       setUserData(userRes.data);
       setRepos(reposWithLang);
       setCurrentPage(1);
+
+      setRecentSearches((prev) => {
+        const updated = [username, ...prev.filter((name) => name !== username)];
+        const trimmed = updated.slice(0, 5);
+        localStorage.setItem('recentSearches', JSON.stringify(trimmed));
+        return trimmed;
+      });
     } catch {
       setError('User not found or something went wrong.');
     } finally {
@@ -103,7 +132,25 @@ const FindUsers = () => {
   const totalPages = Math.ceil(repos.length / perPage);
 
   return (
-    <div className="container mt-4">
+    <div className="container mt-4" style={{ paddingBottom: '100px' }}>
+      {/* Recent Search History */}
+      {recentSearches.length > 0 && (
+        <div className="mb-3">
+          <strong>Recent Searches:</strong>
+          <ul className="list-inline">
+            {recentSearches.map((name, idx) => (
+              <li
+                key={idx}
+                className="list-inline-item text-primary"
+                style={{ cursor: 'pointer' }}
+                onClick={() => fetchUserData(name)}
+              >
+                {name}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
       {/* Universal Search Bar */}
       <div className="input-group mb-3 position-relative">
         <input

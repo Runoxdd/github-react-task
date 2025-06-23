@@ -1,6 +1,13 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import FindUsers from './Search/FindUsers';
+import './User.css';
+const token = import.meta.env.VITE_GITHUB_TOKEN;
+
+const headers = {
+  Authorization: `Bearer ${token}`,
+  Accept: 'application/vnd.github+json',
+};
 
 function User() {
   const [users, setUsers] = useState([]);
@@ -8,12 +15,12 @@ function User() {
   const fetchData = async () => {
     try {
       // First fetch: Get the list of users
-      const res = await axios.get('https://api.github.com/users');
+      const res = await axios.get('https://api.github.com/users', { headers });
       const basicUsers = res.data;
 
       // Second fetch: Get full details for each user
       const detailedUserRequests = basicUsers.map((user) =>
-        axios.get(`https://api.github.com/users/${user.login}`)
+        axios.get(`https://api.github.com/users/${user.login}`, { headers })
       );
 
       const userResponses = await Promise.all(detailedUserRequests);
@@ -30,13 +37,17 @@ function User() {
   }, []);
 
   return (
-    <div style={{ padding: '1rem' }}>
+    <div
+      style={{ padding: '1rem', marginBottom: '100px' }}
+      className="userPage"
+    >
       <FindUsers />
       <h2>GitHub Users</h2>
       <table
         border="5"
-        cellPadding="10"
+        cellPadding={10}
         style={{ width: '100%', textAlign: 'left' }}
+        className="table"
       >
         <thead>
           <tr>

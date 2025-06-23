@@ -25,4 +25,6 @@ dist-ssr
 
 
 #Tokens
-*.env
+.env
+.en.local
+.env.*.local

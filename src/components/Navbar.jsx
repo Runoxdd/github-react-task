@@ -1,35 +1,57 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import Footer from '../pages/Footer/Footer';
 import logo from '../assets/logo.png';
+import { useTheme } from '../Context/ThemeContext';
 
 const Navbar = () => {
+  const { isDarkMode, toggleTheme } = useTheme();
+
+  const navbarStyle = {
+    backgroundColor: isDarkMode ? '#161b22' : '#fcb041', // matches your MainLayout
+    color: isDarkMode ? '#c9d1d9' : '#000000',
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: '1rem 2rem',
+    transition: 'all 0.3s ease-in-out',
+  };
+
+  const linkStyle = {
+    color: isDarkMode ? '#c9d1d9' : '#000000',
+    textTransform: 'uppercase',
+    textDecoration: 'none',
+    marginLeft: '15px',
+    fontWeight: 'bold',
+  };
+
   return (
-    <div
-      className="nav d-flex mx-auto mb-2 text-align "
-      style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        margin: '20px auto',
-      }}
-    >
+    <div style={navbarStyle}>
       <img
         src={logo}
-        alt=""
+        alt="Logo"
         width="200px"
         height="60px"
         style={{ objectFit: 'cover' }}
       />
-      <div style={{ display: 'flex', gap: '10px', marginRight: '10px' }}>
-        <Link to="/">
-          <p style={{ color: '#000', textTransform: 'uppercase' }}>Home</p>
-        </Link>
-        <Link to="/user">
-          <p style={{ color: '#000', textTransform: 'uppercase' }}>Users</p>
-        </Link>
-        <Link to="/about">
-          <p style={{ color: '#000', textTransform: 'uppercase' }}>About Us</p>
-        </Link>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+        <Link to="/" style={linkStyle}>Home</Link>
+        <Link to="/user" style={linkStyle}>Users</Link>
+        <Link to="/about" style={linkStyle}>About Us</Link>
+        <button
+          onClick={toggleTheme}
+          style={{
+            backgroundColor: isDarkMode ? '' : '#161b22',
+            color: isDarkMode ? '#ffffff' : '#000000',
+            border: 'none',
+            padding: '0.5rem 1rem',
+            borderRadius: '5px',
+            cursor: 'pointer',
+            fontWeight: 'bold',
+            transition: 'all 0.3s ease-in-out',
+          }}
+        >
+          {isDarkMode ? '☀ ' : '🌙 '}
+        </button>
       </div>
     </div>
   );

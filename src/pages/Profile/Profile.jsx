@@ -3,6 +3,15 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 
+const token = import.meta.env.VITE_GITHUB_TOKEN;
+
+
+const headers ={
+  Authorization: `Bearer ${token}`,
+  Accept: 'application/vnd.github+json',
+}
+
+
 const Profile = () => {
   const { username } = useParams();
   const [userData, setUserData] = useState(null);
@@ -14,17 +23,17 @@ const Profile = () => {
     const fetchUserProfile = async () => {
       try {
         const userRes = await axios.get(
-          `https://api.github.com/users/${username}`
+          `https://api.github.com/users/${username}`, {headers}
         );
         const repoRes = await axios.get(
-          `https://api.github.com/users/${username}/repos`
+          `https://api.github.com/users/${username}/repos`, {headers}
         );
 
         const reposWithLang = await Promise.all(
           repoRes.data.map(async (repo) => {
             try {
               const langRes = await axios.get(
-                `https://api.github.com/repos/${username}/${repo.name}/languages`
+                `https://api.github.com/repos/${username}/${repo.name}/languages`, {headers}
               );
               const topLang = Object.entries(langRes.data).sort(
                 (a, b) => b[1] - a[1]

@@ -16,10 +16,10 @@ const Home = () => {
         }}
       >
         <div className="text-box">
-          <h1>Easy & fast way to search for github users</h1>
+          <h1>Easy & fast way to search for github users Egg</h1>
           <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. </p>
           <Link to="/user">
-            <button className="btn btn-primary">Search</button>
+            <button className="btn btn-primary ">Search</button>
           </Link>
         </div>
         <img src={homeImg} alt="Home" />

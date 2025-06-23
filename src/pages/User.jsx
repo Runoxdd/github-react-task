@@ -2,18 +2,30 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import FindUsers from './Search/FindUsers';
 
+const token = import.meta.env.VITE_GITHUB_TOKEN;
+
+
+const headers ={
+  Authorization: `Bearer ${token}`,
+  Accept: 'application/vnd.github+json',
+}
+
+
+
+
+
 function User() {
   const [users, setUsers] = useState([]);
 
   const fetchData = async () => {
     try {
       // First fetch: Get the list of users
-      const res = await axios.get('https://api.github.com/users');
+      const res = await axios.get('https://api.github.com/users', {headers});
       const basicUsers = res.data;
 
       // Second fetch: Get full details for each user
       const detailedUserRequests = basicUsers.map((user) =>
-        axios.get(`https://api.github.com/users/${user.login}`)
+        axios.get(`https://api.github.com/users/${user.login}`, {headers})
       );
 
       const userResponses = await Promise.all(detailedUserRequests);

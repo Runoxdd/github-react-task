@@ -1,0 +1,78 @@
+.logo {
+  width: 150px;
+  height: auto;
+  object-fit: cover;
+}
+
+.nav-links {
+  display: flex;
+  gap: 1rem;
+}
+
+.right-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.theme-toggle {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+/* Hamburger icon */
+.menu-toggle {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 2rem;
+  cursor: pointer;
+}
+
+/* Mobile Menu */
+.mobile-menu {
+  position: fixed;
+  top: 0;
+  right: -100%;
+  width: 60%;
+  height: 100vh;
+  background-color: #fcb041;
+  display: flex;
+  flex-direction: column;
+  padding: 2rem;
+  gap: 1.5rem;
+  transition: right 0.3s ease-in-out;
+  z-index: 1000;
+}
+
+.mobile-menu.open {
+  right: 0;
+}
+
+.close-btn {
+  align-self: flex-end;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+/* Responsive rules */
+@media (max-width: 768px) {
+  .nav-links {
+    display: none;
+  }
+
+  .menu-toggle {
+    display: block;
+  }
+}
+
+@media (min-width: 769px) {
+  .mobile-menu {
+    display: none;
+  }
+}

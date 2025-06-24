@@ -1,16 +1,23 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import logo from '../assets/logo.png';
 import { useTheme } from '../Context/ThemeContext';
+import { RxHamburgerMenu } from 'react-icons/rx';
+import { IoMdClose } from 'react-icons/io';
+import './Navbar.css';
 
 const Navbar = () => {
   const { isDarkMode, toggleTheme } = useTheme();
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggleMenu = () => setIsOpen(!isOpen);
 
   const navbarStyle = {
-    backgroundColor: isDarkMode ? '#161b22' : '#fcb041', // matches your MainLayout
+    backgroundColor: isDarkMode ? '#fff' : '#fcb041', // matches your MainLayout
     color: isDarkMode ? '#c9d1d9' : '#000000',
     display: 'flex',
     justifyContent: 'space-between',
+    gap: '10px',
     alignItems: 'center',
     padding: '1rem 2rem',
     transition: 'all 0.3s ease-in-out',
@@ -33,10 +40,20 @@ const Navbar = () => {
         height="60px"
         style={{ objectFit: 'cover' }}
       />
+
       <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-        <Link to="/" style={linkStyle}>Home</Link>
-        <Link to="/user" style={linkStyle}>Users</Link>
-        <Link to="/about" style={linkStyle}>About Us</Link>
+        {/* Desktop Links */}
+        <div className="nav-links">
+          <Link to="/" style={linkStyle}>
+            Home
+          </Link>
+          <Link to="/user" style={linkStyle}>
+            Users
+          </Link>
+          <Link to="/about" style={linkStyle}>
+            About Us
+          </Link>
+        </div>
         <button
           onClick={toggleTheme}
           style={{
@@ -52,6 +69,25 @@ const Navbar = () => {
         >
           {isDarkMode ? '☀ ' : '🌙 '}
         </button>
+        <button className="menu-toggle" onClick={toggleMenu}>
+          <RxHamburgerMenu />
+        </button>
+
+        {/* Mobile Menu */}
+        <div className={`mobile-menu ${isOpen ? 'open' : ''}`}>
+          <button className="close-btn" onClick={() => setIsOpen(false)}>
+            <IoMdClose />
+          </button>
+          <Link to="/" onClick={() => setIsOpen(false)} style={linkStyle}>
+            Home
+          </Link>
+          <Link to="/user" onClick={() => setIsOpen(false)} style={linkStyle}>
+            Users
+          </Link>
+          <Link to="/about" onClick={() => setIsOpen(false)} style={linkStyle}>
+            About Us
+          </Link>
+        </div>
       </div>
     </div>
   );

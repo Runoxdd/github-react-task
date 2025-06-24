@@ -5,19 +5,10 @@ import axios from 'axios';
 
 const token = import.meta.env.VITE_GITHUB_TOKEN;
 
-<<<<<<< HEAD
 const headers = {
   Authorization: `Bearer ${token}`,
   Accept: 'application/vnd.github+json',
 };
-=======
-
-const headers ={
-  Authorization: `Bearer ${token}`,
-  Accept: 'application/vnd.github+json',
-}
-
->>>>>>> 12136838d69bc89796f8dd542b9ea5d78e2e02d0
 
 const Profile = () => {
   const { username } = useParams();
@@ -32,31 +23,20 @@ const Profile = () => {
     const fetchUserProfile = async () => {
       try {
         const userRes = await axios.get(
-<<<<<<< HEAD
           `https://api.github.com/users/${username}`,
           { headers }
         );
         const repoRes = await axios.get(
           `https://api.github.com/users/${username}/repos`,
           { headers }
-=======
-          `https://api.github.com/users/${username}`, {headers}
-        );
-        const repoRes = await axios.get(
-          `https://api.github.com/users/${username}/repos`, {headers}
->>>>>>> 12136838d69bc89796f8dd542b9ea5d78e2e02d0
         );
 
         const reposWithLang = await Promise.all(
           repoRes.data.map(async (repo) => {
             try {
               const langRes = await axios.get(
-<<<<<<< HEAD
                 `https://api.github.com/repos/${username}/${repo.name}/languages`,
                 { headers }
-=======
-                `https://api.github.com/repos/${username}/${repo.name}/languages`, {headers}
->>>>>>> 12136838d69bc89796f8dd542b9ea5d78e2e02d0
               );
               const topLang = Object.entries(langRes.data).sort(
                 (a, b) => b[1] - a[1]
